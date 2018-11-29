@@ -144,5 +144,55 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
+   declare
+   fun{Up Note A}
+      if A=>then 
+         if note.name=='c' then note.sharp=true {Up note A-1}
+         else if note.name=='c' and note.sharp==true then note.sharp=false note.name='d' {Up note A-1}
+            else if note.name=='d' then note.sharp=true {Up note A-1}
+               else if note.name=='d' and note.sharp==true then note.sharp=false note.name='e' {Up note A-1}
+                  else if note.name=='e' then note.name='f' {Up note A-1}
+                     else if note.name=='f' then note.sharp=true {Up note A-1}
+                        else if note.name=='f' and note.sharp==true then note.sharp=false note.name='g' {Up note A-1}
+                           else if note.name=='g' then note.sharp=true {Up note A-1}
+                              else if note.name=='g' and note.sharp==true then note.sharp=false note.name='a' {Up note A-1}
+                                 else if note.name=='a' then note.sharp=true {Up note A-1}
+                                    else if note.name=='a' and note.sharp==true then note.sharp=false note.name='b' {Up note A-1}
+                                       else note.name=='b' then note.name='c' {Up note A-1}
+                                       end
+                                    end
+                                 end
+                              end
+                           end
+                        end
+                     end
+                  end
+               end
+            end
+         end
+      else note
+      end
+   end
    
+   
+   declare
+   fun{Transpose N List}
+      case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
+         [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
+         []silence(duration:D) then H|{Transpose N T}
+         [] duration(seconds:D L) then {Transpose N {Duration H.seconds H.1}}|{Transpose N T}
+         [] stretch(factor:F L) then {Transpose N {Stretch H.factor H.1}}|{Transpose N T}
+         [] drone(note:N amount:A) then {Transpose N {Drone H.note H.amount}}|{Transpose N T}
+         [] transpose(semitones:S L) then {Transpose N {Transpose H.semitones H.1}}|{Transpose N T}
+         else nil
+         end
+      else nil
+      end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+   
+            
+
       

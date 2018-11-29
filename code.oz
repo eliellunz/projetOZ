@@ -191,7 +191,28 @@ end
    end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+   declare
+   fun{Duree Partition Acc}
+      case Partition of H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Duree T Acc+H.duration}
+	                                     []H1|T1 then {Duree H1 Acc}
+	                                     else nil
+	                                     end
+      [] note(name:N octave:O sharp:S duration:D instrument:I) then Partition.duration
+      else nil
+      end
+   end
+
+
+	    
+	    
+declare 
+fun{Duration Seconds Partition}
+   local
+      Fact=T/{Duree Partition Accu}
+   in
+      {Stretch Fact Partition}
+   end
+end
    
             
 

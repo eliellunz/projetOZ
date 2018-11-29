@@ -146,7 +146,7 @@ end
    
    declare
    fun{Up Note A}
-      if A=>then 
+      if A>=1 then 
          if note.name=='c' then note.sharp=true {Up note A-1}
          else if note.name=='c' and note.sharp==true then note.sharp=false note.name='d' {Up note A-1}
             else if note.name=='d' then note.sharp=true {Up note A-1}

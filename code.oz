@@ -108,7 +108,7 @@ end
       case Chord of nil then nil 
       [] H|T then case H of Atom then {ChordToExtended H}|{ChordToExtended T}
          []Name#octave then {ChordToExtended H}|{ChordToExtended T}
-         [] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ChordToExtended }
+			[] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ChordToExtended T}
          else nil
          end
       else nil
@@ -207,7 +207,7 @@ declare
 declare 
 fun{Duration Seconds Partition}
    local
-      Fact=T/{Duree Partition Accu}
+      Fact=T/{Duree Partition nil}
    in
       {Stretch Fact Partition}
    end

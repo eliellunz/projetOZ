@@ -1,0 +1,205 @@
+local
+   % See project statement for API details.
+   [Project] = {Link ['Project2018.ozf']}
+   Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   % Translate a note to the extended notation.
+   fun {NoteToExtended Note}
+      case Note
+      of Name#Octave then
+         note(name:Name octave:Octave sharp:true duration:1.0 instrument:none)
+      [] Atom then
+         case {AtomToString Atom}
+         of [_] then
+            note(name:Atom octave:4 sharp:false duration:1.0 instrument:none)
+         [] [N O] then
+            note(name:{StringToAtom [N]}
+                 octave:{StringToInt [O]}
+                 sharp:false
+                 duration:1.0
+                 instrument: none)
+         end
+      end
+   end
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   fun {PartitionToTimedList Partition}
+      {ToExtend Partition}
+   end
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   fun {Mix P2T Music}
+      % TODO
+      {Project.readFile 'wave/animaux/cow.wav'}
+   end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+   
+   
+  
+   fun{ToExtend List}
+      case List of H|T then case H of silence(duration:D) then H|{ToExtend T}
+	 [] Atom then {NoteToExtended H}|{ToExtend T}
+	 [] Name#octave then {NoteToExtended H}|{ToExtend T}
+         [] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ToExtend T}
+	 [] H1|T1 then {ChordToExtended H}|{ToExtend T}
+         [] duration(seconds:D L) then {Duration H.seconds {ToExtend H.1}}|{ToExtend T}
+         [] stretch(factor:F L) then {Stretch H.factor {ToExtend H.1}}|{ToExtend T}
+         [] drone(note:N amount:A) then {Drone {ToExtend H.note} H.amount}|{ToExtend T}
+         [] transpose(semitones:S L) then {Transpose H.semitones {ToExtend H.2}}|{ToExtend T}
+         else {ToExtend T}
+         end
+      else nil
+      end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+  
+
+   
+  
+   fun{ChordToExtended Chord}
+      case Chord of nil then nil 
+      [] H|T then case H of Atom then {ChordToExtended H}|{ChordToExtended T}
+         []Name#octave then {NoteToExtended H}|{ChordToExtended T}
+         [] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ChordToExtended T }
+         else nil
+         end
+      else nil
+      end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+   
+   fun{Drone Item A}
+      if A=<0 then nil
+      else Item|{Drone item A-1}
+      end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+   local E in
+   fun{Stretch Factor List}
+      case List of nil then nil
+      [] H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then E=H.duration H.duration=E*Factor H|{Stretch Factor T}
+         [] H1|T1 then {Stretch Factor H}|{Stretch Factor T}
+         [] silence(duration:D) then E=H.duration H.duration=E*Factor H|{Stretch Factor T}
+         [] duration(seconds:D L) then {Stretch Factor {Duration H.seconds H.1}}|{Stretch Factor T}
+         [] stretch(factor:F L) then {Stretch Factor {Stretch H.factor H.1}}|{Stretch Factor T}
+         [] drone(note:N amount:A) then {Stretch Factor {Drone H.note H.amount}}|{Stretch Factor T}
+         [] transpose(semitones:S L) then {Stretch Factor {Transpose H.semitones H.1}}|{Stretch Factor T}
+         else nil
+         end
+      else nil
+      end
+   end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
+   
+   fun{Up Note A}
+      if A>=1 then 
+         if note.name=='c' then note.sharp=true {Up note A-1}
+         else if note.name=='c' andthen note.sharp==true then note.sharp=false note.name='d' {Up note A-1}
+            else if note.name=='d' then note.sharp=true {Up note A-1}
+               else if note.name=='d' andthen note.sharp==true then note.sharp=false note.name='e' {Up note A-1}
+                  else if note.name=='e' then note.name='f' {Up note A-1}
+                     else if note.name=='f' then note.sharp=true {Up note A-1}
+                        else if note.name=='f' andthen note.sharp==true then note.sharp=false note.name='g' {Up note A-1}
+                           else if note.name=='g' then note.sharp=true {Up note A-1}
+                              else if note.name=='g' andthen note.sharp==true then note.sharp=false note.name='a' {Up note A-1}
+                                 else if note.name=='a' then note.sharp=true {Up note A-1}
+                                    else if note.name=='a' andthen note.sharp==true then note.sharp=false note.name='b' {Up note A-1}
+					 else if note.name=='b' then note.name='c' {Up note A-1}
+					      end
+					    end
+                                    end
+                                 end
+                              end
+                           end
+                        end
+                     end
+                  end
+               end
+            end
+         end
+      else note
+      end
+   end
+   
+   
+   
+   
+   fun{Transpose N List}
+      case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
+         [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
+         []silence(duration:D) then H|{Transpose N T}
+         [] duration(seconds:D L) then {Transpose N {Duration H.seconds H.1}}|{Transpose N T}
+         [] stretch(factor:F L) then {Transpose N {Stretch H.factor H.1}}|{Transpose N T}
+         [] drone(note:N amount:A) then {Transpose N {Drone H.note H.amount}}|{Transpose N T}
+         [] transpose(semitones:S L) then {Transpose N {Transpose H.semitones H.1}}|{Transpose N T}
+         else nil
+         end
+      else nil
+      end
+   end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+   fun{Duree Partition Acc}
+      case Partition of H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Duree T Acc+H.duration}
+	                                     []H1|T1 then {Duree H1 Acc}
+	                                     else nil
+	                                     end
+      [] note(name:N octave:O sharp:S duration:D instrument:I) then Partition.duration
+      else nil
+      end
+   end
+
+	    
+ 
+fun{Duration Seconds Partition}
+   local 
+      Fact=Seconds/{Duree Partition nil}
+   in
+      {Stretch Fact Partition}
+   end
+end
+   
+
+   Music = {Project.load 'joy.dj.oz'}
+   Start
+
+   % Uncomment next line to insert your tests.
+   % \insert 'tests.oz'
+   % !!! Remove this before submitting.
+in
+      Start = {Time} 
+   
+
+   % Uncomment next line to run your tests.
+   % {Test Mix PartitionToTimedList}
+
+   % Add variables to this list to avoid "local variable used only once"
+   % warnings.
+   {ForAll [NoteToExtended Music] Wait}
+   
+   % Calls your code, prints the result and outputs the result to `out.wav`.
+   % You don't need to modify this.
+   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   
+   % Shows the total time to run your code.
+   {Browse {IntToFloat {Time}-Start} / 1000.0}
+end
+   
+ 

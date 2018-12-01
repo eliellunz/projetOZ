@@ -146,19 +146,20 @@ end
    
 declare
    fun{Up Note A}
-      if A>=1 then 
-         if note.name=='c' then note.sharp=true {Up note A-1}
-         else if note.name=='c' andthen note.sharp==true then note.sharp=false note.name='d' {Up note A-1}
-            else if note.name=='d' then note.sharp=true {Up note A-1}
-               else if note.name=='d' andthen note.sharp==true then note.sharp=false note.name='e' {Up note A-1}
-                  else if note.name=='e' then note.name='f' {Up note A-1}
-                     else if note.name=='f' then note.sharp=true {Up note A-1}
-                        else if note.name=='f' andthen note.sharp==true then note.sharp=false note.name='g' {Up note A-1}
-                           else if note.name=='g' then note.sharp=true {Up note A-1}
-                              else if note.name=='g' andthen note.sharp==true then note.sharp=false note.name='a' {Up note A-1}
-                                 else if note.name=='a' then note.sharp=true {Up note A-1}
-                                    else if note.name=='a' andthen note.sharp==true then note.sharp=false note.name='b' {Up note A-1}
-					 else if note.name=='b' then note.name='c' {Up note A-1}
+      E=Note.octave
+	if A>=1 then 
+         if Note.name=='c' then Note.sharp=true {Up Note A-1}
+         else if Note.name=='c' andthen Note.sharp==true then Note.sharp=false Note.name='d' {Up Note A-1}
+            else if Note.name=='d' then Note.sharp=true {Up Note A-1}
+               else if Note.name=='d' andthen Note.sharp==true then Note.sharp=false Note.name='e' {Up Note A-1}
+                  else if Note.name=='e' then Note.name='f' {Up Note A-1}
+                     else if Note.name=='f' then Note.sharp=true {Up Note A-1}
+                        else if Note.name=='f' andthen Note.sharp==true then Note.sharp=false Note.name='g' {Up Note A-1}
+                           else if Note.name=='g' then Note.sharp=true {Up Note A-1}
+                              else if Note.name=='g' andthen Note.sharp==true then Note.sharp=false note.name='a' {Up Note A-1}
+                                 else if Note.name=='a' then Note.sharp=true {Up Note A-1}
+                                    else if Note.name=='a' andthen Note.sharp==true then Note.sharp=false Note.name='b' {Up Note A-1}
+					 else if Note.name=='b' then Note.name='c' Note.octave=E+1 {Up Note A-1}
 					      end
 					    end
                                     end
@@ -171,15 +172,36 @@ declare
                end
             end
          end
-      else note
+	if A<=-1 then if Note.name=='b' then Note.name='a' Note.sharp=true {Up Note A+1}
+         else if Note.name=='a' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+            else if Note.name=='a' then Note.sharp=true Note.name='g' {Up Note A+1}
+               else if Note.name=='g' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+                  else if Note.name=='g' then Note.name='f' Note.sharp=true {Up Note A+1}
+		     else if Note.name=='f' andthen Note.sharp=true then Note.sharp=false {Up Note A+1}
+                        else if Note.name=='f' then Note.name='e' {Up Note A+1}
+                           else if Note.name=='e' then Note.sharp=true Note.name='d' {Up Note A+1}
+                              else if Note.name=='d' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+                                 else if Note.name=='d' then Note.sharp=true Note.name='c' {Up Note A+1}
+                                    else if Note.name=='c' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+					 else if Note.name=='c' then Note.name='b' Note.octave=E-1{Up Note A+1} 
+					      end
+					    end
+                                    end
+                                 end
+                              end
+                           end
+                        end
+                     end
+                  end
+               end
+            end
+         end
       end
    end
    
    
    declare
    fun{Transpose N List}
-	if N<0 then {Transpose N+12 List}
-	else
 	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
          []silence(duration:D) then H|{Transpose N T}

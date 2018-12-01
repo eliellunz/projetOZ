@@ -178,7 +178,9 @@ declare
    
    declare
    fun{Transpose N List}
-      case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
+	if N<0 then {Transpose N+12 List}
+	else
+	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
          []silence(duration:D) then H|{Transpose N T}
          [] duration(seconds:D L) then {Transpose N {Duration H.seconds H.1}}|{Transpose N T}
@@ -187,8 +189,7 @@ declare
          [] transpose(semitones:S L) then {Transpose N {Transpose H.semitones H.1}}|{Transpose N T}
          else nil
          end
-      else nil
-      end
+       end
    end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

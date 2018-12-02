@@ -144,7 +144,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-declare
+  declare
    fun{Up Note A}
       E=Note.octave
 	if A>=1 then 
@@ -215,7 +215,7 @@ declare
    end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   declare
+ declare
    fun{Duree Partition Acc}
       case Partition of H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Duree T Acc+H.duration}
 	                                     []H1|T1 then {Duree H1 Acc}
@@ -227,11 +227,97 @@ declare
    end
 
 	    
-declare 
-fun{Duration Seconds Partition}
-   local
-      Fact=T/{Duree Partition nil}
-   in
-      {Stretch Fact Partition}
+   declare 
+   fun{Duration Seconds Partition}
+      local
+         Fact=T/{Duree Partition nil}
+      in
+         {Stretch Fact Partition}
+      end
    end
-end
+		
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+ declare 
+		fun {Merge P2T List}
+			case List of H|T then case H of Fact#Music then 
+					{Sum {Map {Mix P2T H} fun{$ X} X*Fact end} {Merge P2T T}}
+				else nil end
+			else end
+		end
+		
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		declare
+		fun {Sum L1 L2}
+			case L1#L2 of (H1|T1)#(H2|T2) then H1+H2|{Sum T1 T2}
+			[] (H1|T1)#nil then H1|{Sum T1 nil}
+			[] nil#(H2|T2) then H2|{Sum nil T2}
+			else nil 
+			end
+		end
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		declare
+		fun {Cut D F Music}
+			local Deb=44100.0*D
+			      Fin=44100.0*F
+			in
+			case Music of H|T then if Deb<0.0 then 0.0|{Cut Deb+1.0 Fin H|T}
+					else if Deb==Fin then H|nil
+						else H|{Cut Deb+1.0 Fin T}
+						end
+					end
+				[] nil then if Deb==Fin then nil
+					else 0.0|{Cut Deb+1.0 Fin nil}
+					end
+				end
+			end
+		end
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		
+		declare 
+		fun {Fade S O Music}
+			Start=44100.0*S
+			Out=44100.0*O
+			Len={IntToFloat {Lenght Music}}
+			local fun {Fade2 X Music}
+				case Music of H|T then if X=<Start then H*((X-1)/(Start))|{Fade2 X+1.0 T}
+						else if X>Start andthen X<(Len-Out) then H|{Fade2 X+1.0 T}
+							else H*((Len-X)/Out)|{Fade2 X+1.0 T} 
+							end
+						end
+					[] nil then nil 
+					else nil
+					end
+				end
+			in
+			{Fade2 0.0 Music}
+			end
+		end
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		declare
+		fun {Echo D F Music}
+			Delay=D*44100.0
+			local fun {MusicWD Delay Music Acc}
+					if Delay>0.0 then 0.0|{MusicWD Delay-1.0 Music Acc}
+					else case Music of H|T then H|{MusicWD Delay T Acc}
+						else Acc 
+						end
+					end
+				end
+			in
+				{Merge P2T [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
+			end
+		end
+		
+		
+		
+		
+		
+		

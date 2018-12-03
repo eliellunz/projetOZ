@@ -36,36 +36,7 @@ local
       % TODO
       {Project.readFile 'wave/animaux/cow.wav'}
    end
-
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-   Music = {Project.load 'joy.dj.oz'}
-   Start
-
-   % Uncomment next line to insert your tests.
-   % \insert 'tests.oz'
-   % !!! Remove this before submitting.
-in
-   Start = {Time}
-
-   % Uncomment next line to run your tests.
-   % {Test Mix PartitionToTimedList}
-
-   % Add variables to this list to avoid "local variable used only once"
-   % warnings.
-   {ForAll [NoteToExtended Music] Wait}
-   
-   % Calls your code, prints the result and outputs the result to `out.wav`.
-   % You don't need to modify this.
-   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
-   
-   % Shows the total time to run your code.
-   {Browse {IntToFloat {Time}-Start} / 1000.0}
-end
-   
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
-   declare
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
    fun{ToExtend List}
       case List of H|T then case H of silence(duration:D) then H|{ToExtend T}
          [] Atom then {NoteToExtend H}|{ToExtend T}
@@ -84,7 +55,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-   declare
+   
    fun {Reverse Music Acc} %music=liste
       case Music of nil then Acc
       [] H|T then {Reverse T H|Acc}
@@ -94,7 +65,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-   declare
+   
       fun{Repeat N Music Acc}  
          if N>=1 then {Repeat N-1 Music Music|Acc}
          else Acc
@@ -103,7 +74,7 @@ end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-   declare 
+    
    fun{ChordToExtended Chord}
       case Chord of nil then nil 
       [] H|T then case H of Atom then {ChordToExtended H}|{ChordToExtended T}
@@ -117,7 +88,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-   declare
+   
    fun{Drone Item A}
       if A=<0 then nil
       else Item|{Drone item A-1}
@@ -126,7 +97,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-   declare E in
+   local E in
    fun{Stretch Factor List}
       case List of nil then nil
       [] H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then E=H.duration H.duration=E*Factor H|{Stretch Factor T}
@@ -144,7 +115,7 @@ end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-  declare
+  
    fun{Up Note A}
       E=Note.octave
 	if A>=1 then 
@@ -200,7 +171,7 @@ end
    end
    
    
-   declare
+   
    fun{Transpose N List}
 	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
@@ -215,7 +186,7 @@ end
    end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- declare
+
    fun{Duree Partition Acc}
       case Partition of H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Duree T Acc+H.duration}
 	                                     []H1|T1 then {Duree H1 Acc}
@@ -227,7 +198,7 @@ end
    end
 
 	    
-   declare 
+    
    fun{Duration Seconds Partition}
       local
          Fact=T/{Duree Partition nil}
@@ -238,7 +209,7 @@ end
 		
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
- declare 
+ 
 		fun {Merge P2T List}
 			case List of H|T then case H of Fact#Music then 
 					{Sum {Map {Mix P2T H} fun{$ X} X*Fact end} {Merge P2T T}}
@@ -248,7 +219,7 @@ end
 		
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		declare
+		
 		fun {Sum L1 L2}
 			case L1#L2 of (H1|T1)#(H2|T2) then H1+H2|{Sum T1 T2}
 			[] (H1|T1)#nil then H1|{Sum T1 nil}
@@ -259,7 +230,7 @@ end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-		declare
+		
 		fun {Cut D F Music}
 			local Deb=44100.0*D
 			      Fin=44100.0*F
@@ -279,7 +250,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
 		
-		declare 
+		 
 		fun {Fade S O Music}
 			Start=44100.0*S
 			Out=44100.0*O
@@ -301,7 +272,7 @@ end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		declare
+		
 		fun {Echo D F Music}
 			Delay=D*44100.0
 			local fun {MusicWD Delay Music Acc}
@@ -315,8 +286,112 @@ end
 				{Merge P2T [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
 			end
 		end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
+		fun{Hauteur Note}
+			local Height= height(a:0.0 b:2.0 c:3.0 d:5.0 e:7.0 f:8.0 g:11.0)
+				HeightS= heightsharp(a:1.0 c:4.0 d:6.0 f:9.0 g:10.0)
+				Nom= Note.name
+			in
+				if Note.sharp== false then then Height.nom
+				else HeightS.nom
+				end
+			end
+		end
+ 		
+		fun{Freq Item} 
+			local Fact 
+			in 
+				case {Label Item} of 'note' then Fact={Number.pow 2.0 (({IntToFloat Item.octave})-4.0)} 
+					{Number.pow 2.0 {Hauteur Item}/12.0}*440.0
+				else if case Item of H|T then {Freq H}+{Freq T}
+						else 0.0 
+						end
+					end
+				end
+			end
+		end
 		
+		fun{NoteToSample Note}
+			local A PI={Acos ~1.0}
+				fun{NoteToS N Acc}
+					if Acc>(N.duration)*44100 then nil
+					else A=0.5*{Sin 2.0*PI*{Freq N}*{IntToFloat Acc}/44100.0}
+						A|{NoteToS N Acc+1}
+					end
+				end
+			in
+				{NoteToS Note 1.0}
+			end
+		end
 		
+		fun{ChordToSample Chord}
+			case Chord of nil then nil
+			[] H|T then {NoteToSample H}|{ChordToSample T}
+			else nil
+			end
+		end
+		
+		fun{ToOneChord Chord}%Prend un accord sous forme de liste de NoteSampled et renvoie une seule liste avec les Notes additionne
+			local
+				fun{ToOneC C Acc}e
+					case  C of nil then Acc
+					[] H|nil then H
+					[] H|T then {ToOneC T.2 Acc+{Sum H|T.1}}
+					end
+				end
+			in {ToOneC Chord nil}
+			end
+		end
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				fun{WaveToSample Wave} 
+					{Project.load Wave.1} %ou alors {Project.readFile Wave.1}
+				end
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				fun{Clip Bas Haut Item}
+					case Item of H|T then if H<Bas then Bas|{Clip Bas Haut T}
+							      else if H>Haut then Haut|{Clip Bas Haut T}
+								   else H|{Clip Bas Haut T}
+								   end
+							      end
+					else nil 
+					end
+				end
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+					
+				
+
+   Music = {Project.load 'joy.dj.oz'}
+   Start
+
+   % Uncomment next line to insert your tests.
+   % \insert 'tests.oz'
+   % !!! Remove this before submitting.
+in
+   Start = {Time}
+
+   % Uncomment next line to run your tests.
+   % {Test Mix PartitionToTimedList}
+
+   % Add variables to this list to avoid "local variable used only once"
+   % warnings.
+   {ForAll [NoteToExtended Music] Wait}
+   
+   % Calls your code, prints the result and outputs the result to `out.wav`.
+   % You don't need to modify this.
+   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   
+   % Shows the total time to run your code.
+   {Browse {IntToFloat {Time}-Start} / 1000.0}
+end
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+   
+
+
+					
+		
+
 		
 		
 		

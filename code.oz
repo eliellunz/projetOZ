@@ -271,7 +271,7 @@ local
 					end
 				end
 			in
-				{Merge [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
+				{Merge [ F#{MusicWD Delay Music nil} 1#Music]}
 			end
 		end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
@@ -345,7 +345,23 @@ local
 				end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 					
-				
+	   fun {Loop D Music}
+	local 
+		fun {Repet M Acc}
+			if Acc=<D*44100.0 then 
+				case M of nil then {Repet Music Acc+1.0}
+				[]H|T then H|{Repet T Acc+1.0}
+				end
+			else
+				nil
+			end
+		end
+	in
+		{Repet Music 0.0}
+	end
+   end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    Music = {Project.load 'joy.dj.oz'}
    Start
@@ -374,15 +390,3 @@ end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
    
-
-
-					
-		
-
-		
-		
-		
-		
-
-		
-		

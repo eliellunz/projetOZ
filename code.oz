@@ -1,4 +1,5 @@
 local
+  
    % See project statement for API details.
    [Project] = {Link ['Project2018.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
@@ -39,10 +40,10 @@ local
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
    fun{ToExtend List}
       case List of H|T then case H of silence(duration:D) then H|{ToExtend T}
-         [] Atom then {NoteToExtend H}|{ToExtend T}
-         [] Name#octave then {NoteToExtend H}|{ToExtend T}
+         [] Atom then {NoteToExtended H}|{ToExtend T}
+         [] Name#octave then {NoteToExtended H}|{ToExtend T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ToExtend T}
-         [] H1|T1 then {ChordToExtend H}|{ToExtend T}
+         [] H1|T1 then {ChordToExtended H}|{ToExtend T}
          [] duration(seconds:D L) then {Duration H.seconds {ToExtend H.1}}|{ToExtend T}
          [] stretch(factor:F L) then {Stretch H.factor {ToExtend H.1}}|{ToExtend T}
          [] drone(note:N amount:A) then {Drone {ToExtend H.note} H.amount}|{ToExtend T}
@@ -112,63 +113,49 @@ local
       else nil
       end
    end
+   end
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
-  
-   fun{Up Note A}
-      E=Note.octave
+ 
+ fun{Up Note A}
+     local O in
+      O=Note.octave
 	if A>=1 then 
          if Note.name=='c' then Note.sharp=true {Up Note A-1}
-         else if Note.name=='c' andthen Note.sharp==true then Note.sharp=false Note.name='d' {Up Note A-1}
-            else if Note.name=='d' then Note.sharp=true {Up Note A-1}
-               else if Note.name=='d' andthen Note.sharp==true then Note.sharp=false Note.name='e' {Up Note A-1}
-                  else if Note.name=='e' then Note.name='f' {Up Note A-1}
-                     else if Note.name=='f' then Note.sharp=true {Up Note A-1}
-                        else if Note.name=='f' andthen Note.sharp==true then Note.sharp=false Note.name='g' {Up Note A-1}
-                           else if Note.name=='g' then Note.sharp=true {Up Note A-1}
-                              else if Note.name=='g' andthen Note.sharp==true then Note.sharp=false note.name='a' {Up Note A-1}
-                                 else if Note.name=='a' then Note.sharp=true {Up Note A-1}
-                                    else if Note.name=='a' andthen Note.sharp==true then Note.sharp=false Note.name='b' {Up Note A-1}
-					 else if Note.name=='b' then Note.name='c' Note.octave=E+1 {Up Note A-1}
-					      end
-					    end
-                                    end
-                                 end
-                              end
-                           end
-                        end
-                     end
-                  end
-               end
-            end
-         end
-	if A<=-1 then if Note.name=='b' then Note.name='a' Note.sharp=true {Up Note A+1}
-         else if Note.name=='a' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-            else if Note.name=='a' then Note.sharp=true Note.name='g' {Up Note A+1}
-               else if Note.name=='g' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-                  else if Note.name=='g' then Note.name='f' Note.sharp=true {Up Note A+1}
-		     else if Note.name=='f' andthen Note.sharp=true then Note.sharp=false {Up Note A+1}
-                        else if Note.name=='f' then Note.name='e' {Up Note A+1}
-                           else if Note.name=='e' then Note.sharp=true Note.name='d' {Up Note A+1}
-                              else if Note.name=='d' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-                                 else if Note.name=='d' then Note.sharp=true Note.name='c' {Up Note A+1}
-                                    else if Note.name=='c' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-					 else if Note.name=='c' then Note.name='b' Note.octave=E-1{Up Note A+1} 
-					      end
-					    end
-                                    end
-                                 end
-                              end
-                           end
-                        end
-                     end
-                  end
-               end
-            end
-         end
-      end
-   end
+         elseif Note.name=='c' andthen Note.sharp==true then Note.sharp=false Note.name='d' {Up Note A-1}
+            elseif Note.name=='d' then Note.sharp=true {Up Note A-1}
+               elseif Note.name=='d' andthen Note.sharp==true then Note.sharp=false Note.name='e' {Up Note A-1}
+                  elseif Note.name=='e' then Note.name='f' {Up Note A-1}
+                     elseif Note.name=='f' then Note.sharp=true {Up Note A-1}
+                        elseif Note.name=='f' andthen Note.sharp==true then Note.sharp=false Note.name='g' {Up Note A-1}
+                           elseif Note.name=='g' then Note.sharp=true {Up Note A-1}
+                              elseif Note.name=='g' andthen Note.sharp==true then Note.sharp=false note.name='a' {Up Note A-1}
+                                 elseif Note.name=='a' then Note.sharp=true {Up Note A-1}
+                                    elseif Note.name=='a' andthen Note.sharp==true then Note.sharp=false Note.name='b' {Up Note A-1}
+	 elseif Note.name=='b' then Note.name='c' Note.octave=O+1 {Up Note A-1}
+	 else nil
+	 end
+	else if A=<~1 then
+	 if Note.name=='b' then Note.name='a' Note.sharp=true {Up Note A+1}
+         elseif Note.name=='a' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+            elseif Note.name=='a' then Note.sharp=true Note.name='g' {Up Note A+1}
+               elseif Note.name=='g' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+                  elseif Note.name=='g' then Note.name='f' Note.sharp=true {Up Note A+1}
+		     elseif Note.name=='f' andthen Note.sharp=true then Note.sharp=false {Up Note A+1}
+                        elseif Note.name=='f' then Note.name='e' {Up Note A+1}
+                           elseif Note.name=='e' then Note.sharp=true Note.name='d' {Up Note A+1}
+                              elseif Note.name=='d' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+                                 elseif Note.name=='d' then Note.sharp=true Note.name='c' {Up Note A+1}
+                                    elseif Note.name=='c' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
+					 elseif Note.name=='c' then Note.name='b' Note.octave=O-1{Up Note A+1} 
+	 else nil
+	 end
+	else nil
+	end
+	end
+     end
+ end
    
    
    
@@ -201,7 +188,7 @@ local
     
    fun{Duration Seconds Partition}
       local
-         Fact=T/{Duree Partition nil}
+         Fact=Seconds/{Duree Partition nil}
       in
          {Stretch Fact Partition}
       end
@@ -210,11 +197,11 @@ local
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
  
-		fun {Merge P2T List}
+		fun {Merge List}
 			case List of H|T then case H of Fact#Music then 
-					{Sum {Map {Mix P2T H} fun{$ X} X*Fact end} {Merge P2T T}}
+					{Sum {Map  H fun{$ X} X*Fact end} {Merge T}}
 				else nil end
-			else end
+			else nil  end
 		end
 		
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -230,15 +217,15 @@ local
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-		
+	
 		fun {Cut D F Music}
 			local Deb=44100.0*D
 			      Fin=44100.0*F
 			in
 			case Music of H|T then if Deb<0.0 then 0.0|{Cut Deb+1.0 Fin H|T}
-					else if Deb==Fin then H|nil
+					elseif Deb==Fin then H|nil
 						else H|{Cut Deb+1.0 Fin T}
-						end
+					
 					end
 				[] nil then if Deb==Fin then nil
 					else 0.0|{Cut Deb+1.0 Fin nil}
@@ -252,10 +239,10 @@ local
 		
 		 
 		fun {Fade S O Music}
-			Start=44100.0*S
+		local	Start=44100.0*S
 			Out=44100.0*O
-			Len={IntToFloat {Lenght Music}}
-			local fun {Fade2 X Music}
+			Len={IntToFloat {Length Music}}
+		in	local fun {Fade2 X Music}
 				case Music of H|T then if X=<Start then H*((X-1)/(Start))|{Fade2 X+1.0 T}
 						else if X>Start andthen X<(Len-Out) then H|{Fade2 X+1.0 T}
 							else H*((Len-X)/Out)|{Fade2 X+1.0 T} 
@@ -268,6 +255,7 @@ local
 			in
 			{Fade2 0.0 Music}
 			end
+		   end
 		end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -283,7 +271,7 @@ local
 					end
 				end
 			in
-				{Merge P2T [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
+				{Merge [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
 			end
 		end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
@@ -292,8 +280,8 @@ local
 				HeightS= heightsharp(a:1.0 c:4.0 d:6.0 f:9.0 g:10.0)
 				Nom= Note.name
 			in
-				if Note.sharp== false then then Height.nom
-				else HeightS.nom
+				if Note.sharp== false then Height.Nom
+				else HeightS.Nom
 				end
 			end
 		end
@@ -303,9 +291,8 @@ local
 			in 
 				case {Label Item} of 'note' then Fact={Number.pow 2.0 (({IntToFloat Item.octave})-4.0)} 
 					{Number.pow 2.0 {Hauteur Item}/12.0}*440.0
-				else if case Item of H|T then {Freq H}+{Freq T}
+				else case Item of H|T then {Freq H}+{Freq T}
 						else 0.0 
-						end
 					end
 				end
 			end
@@ -333,10 +320,10 @@ local
 		
 		fun{ToOneChord Chord}%Prend un accord sous forme de liste de NoteSampled et renvoie une seule liste avec les Notes additionne
 			local
-				fun{ToOneC C Acc}e
+				fun{ToOneC C Acc}
 					case  C of nil then Acc
 					[] H|nil then H
-					[] H|T then {ToOneC T.2 Acc+{Sum H|T.1}}
+					[] H|T then {ToOneC T.2 Acc+{Sum H T.1}}
 					end
 				end
 			in {ToOneC Chord nil}
@@ -394,5 +381,8 @@ end
 
 		
 		
+		
+		
+
 		
 		

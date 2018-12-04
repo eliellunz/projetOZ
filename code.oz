@@ -25,20 +25,22 @@ local
       end
    end
 
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {PartitionToTimedList Partition}
       {ToExtend Partition}
    end
 
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {Mix P2T Music}
       % TODO
       {Project.readFile 'wave/animaux/cow.wav'}
    end
+	
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
-   fun{ToExtend List}
+ 
+	fun{ToExtend List}
       case List of H|T then case H of silence(duration:D) then H|{ToExtend T}
          [] Atom then {NoteToExtended H}|{ToExtend T}
          [] Name#octave then {NoteToExtended H}|{ToExtend T}
@@ -54,8 +56,7 @@ local
       end
    end
    
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
    
    fun {Reverse Music Acc} %music=liste
       case Music of nil then Acc
@@ -64,8 +65,7 @@ local
       end
    end
    
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
    
       fun{Repeat N Music Acc}  
          if N>=1 then {Repeat N-1 Music Music|Acc}
@@ -73,8 +73,7 @@ local
          end
       end 
 
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
     
    fun{ChordToExtended Chord}
       case Chord of nil then nil 
@@ -87,8 +86,7 @@ local
       end
    end
    
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
    
    fun{Drone Item A}
       if A=<0 then nil
@@ -157,7 +155,7 @@ local
      end
  end
    
-   
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
    
    fun{Transpose N List}
 	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
@@ -184,7 +182,7 @@ local
       end
    end
 
-	    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	    
     
    fun{Duration Seconds Partition}
       local
@@ -194,8 +192,7 @@ local
       end
    end
 		
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
  
 		fun {Merge List}
 			case List of H|T then case H of Fact#Music then 
@@ -204,8 +201,7 @@ local
 			else nil  end
 		end
 		
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
 		
 		fun {Sum L1 L2}
 			case L1#L2 of (H1|T1)#(H2|T2) then H1+H2|{Sum T1 T2}
@@ -216,7 +212,6 @@ local
 		end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 	
 		fun {Cut D F Music}
 			local Deb=44100.0*D
@@ -235,9 +230,7 @@ local
 		end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		
-		
-		 
+			 
 		fun {Fade S O Music}
 		local	Start=44100.0*S
 			Out=44100.0*O
@@ -260,7 +253,6 @@ local
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		
 		fun {Echo D F Music}
 			Delay=D*44100.0
 			local fun {MusicWD Delay Music Acc}
@@ -273,9 +265,11 @@ local
 			in
 				{Merge [ F#{MusicWD Delay Music nil} 1#Music]} %% j'ai mis 1 comme fact de music car pas clair, a verif
 			end
-		end
+	end
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
-		fun{Hauteur Note}
+		
+	fun{Hauteur Note}
 			local Height= height(a:0.0 b:2.0 c:3.0 d:5.0 e:7.0 f:8.0 g:11.0)
 				HeightS= heightsharp(a:1.0 c:4.0 d:6.0 f:9.0 g:10.0)
 				Nom= Note.name
@@ -286,6 +280,8 @@ local
 			end
 		end
  		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	
 		fun{Freq Item} 
 			local Fact 
 			in 
@@ -298,6 +294,8 @@ local
 			end
 		end
 		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	
 		fun{NoteToSample Note}
 			local A PI={Acos ~1.0}
 				fun{NoteToS N Acc}
@@ -310,14 +308,18 @@ local
 				{NoteToS Note 1.0}
 			end
 		end
-		
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	
 		fun{ChordToSample Chord}
 			case Chord of nil then nil
 			[] H|T then {NoteToSample H}|{ChordToSample T}
 			else nil
 			end
 		end
-		
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	
 		fun{ToOneChord Chord}%Prend un accord sous forme de liste de NoteSampled et renvoie une seule liste avec les Notes additionne
 			local
 				fun{ToOneC C Acc}
@@ -330,22 +332,38 @@ local
 			end
 		end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-				fun{WaveToSample Wave} 
-					{Project.load Wave.1} %ou alors {Project.readFile Wave.1}
-				end
+				
+	fun{WaveToSample Wave} 
+		{Project.load Wave.1} %ou alors {Project.readFile Wave.1}
+	end
+	
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-				fun{Clip Bas Haut Item}
-					case Item of H|T then if H<Bas then Bas|{Clip Bas Haut T}
-							      else if H>Haut then Haut|{Clip Bas Haut T}
-								   else H|{Clip Bas Haut T}
-								   end
-							      end
-					else nil 
-					end
-				end
+	
+	fun{Clip Bas Haut Item}
+		case Item of H|T then if H<Bas then Bas|{Clip Bas Haut T}
+				  else if H>Haut then Haut|{Clip Bas Haut T}
+				   else H|{Clip Bas Haut T}
+					   end
+				      end
+		else nil 
+		end
+	end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 					
-				
+	fun {Loop D Music}
+		local fun {Boucle M Acc}
+				if Acc=<D*44100.0 then case M of H|T then H|{Boucle T Acc+1.0}
+					[] nil then {Boucle M Acc+1.0}
+					else nil 
+					end
+				else nil
+				end
+			end
+		in {Boucle Music 0.0}
+		end
+	end
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 
    Music = {Project.load 'joy.dj.oz'}
    Start

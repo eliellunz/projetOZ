@@ -119,45 +119,42 @@ local
    
  
  fun{Up Note A}
-     local O in
+   local O in
       O=Note.octave
-	if A>=1 then 
-         if Note.name=='c' then Note.sharp=true {Up Note A-1}
-         elseif Note.name=='c' andthen Note.sharp==true then Note.sharp=false Note.name='d' {Up Note A-1}
-            elseif Note.name=='d' then Note.sharp=true {Up Note A-1}
-               elseif Note.name=='d' andthen Note.sharp==true then Note.sharp=false Note.name='e' {Up Note A-1}
-                  elseif Note.name=='e' then Note.name='f' {Up Note A-1}
-                     elseif Note.name=='f' then Note.sharp=true {Up Note A-1}
-                        elseif Note.name=='f' andthen Note.sharp==true then Note.sharp=false Note.name='g' {Up Note A-1}
-                           elseif Note.name=='g' then Note.sharp=true {Up Note A-1}
-                              elseif Note.name=='g' andthen Note.sharp==true then Note.sharp=false note.name='a' {Up Note A-1}
-                                 elseif Note.name=='a' then Note.sharp=true {Up Note A-1}
-                                    elseif Note.name=='a' andthen Note.sharp==true then Note.sharp=false Note.name='b' {Up Note A-1}
-	 elseif Note.name=='b' then Note.name='c' Note.octave=O+1 {Up Note A-1}
-	 else nil
-	 end
-	else if A=<~1 then
-	 if Note.name=='b' then Note.name='a' Note.sharp=true {Up Note A+1}
-         elseif Note.name=='a' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-            elseif Note.name=='a' then Note.sharp=true Note.name='g' {Up Note A+1}
-               elseif Note.name=='g' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-                  elseif Note.name=='g' then Note.name='f' Note.sharp=true {Up Note A+1}
-		     elseif Note.name=='f' andthen Note.sharp=true then Note.sharp=false {Up Note A+1}
-                        elseif Note.name=='f' then Note.name='e' {Up Note A+1}
-                           elseif Note.name=='e' then Note.sharp=true Note.name='d' {Up Note A+1}
-                              elseif Note.name=='d' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-                                 elseif Note.name=='d' then Note.sharp=true Note.name='c' {Up Note A+1}
-                                    elseif Note.name=='c' andthen Note.sharp==true then Note.sharp=false {Up Note A+1}
-					 elseif Note.name=='c' then Note.name='b' Note.octave=O-1{Up Note A+1} 
-	 else nil
-	 end
-	else nil
-	end
-	end
-     end
- end
-   
-   
+      if A>=1 then case Note.name of 'c' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true instrument:none) A-1}
+		   []'c' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false instrument:none) A-1}
+		   []'d' andthen Note.sharp=false then {Up note(name:'d' octave:O sharp:true instrument:none) A-1}
+		   []'d' andthen Note.sharp==true then {Up note(name:'e' octave:O sharp:false instrument:none) A-1}
+		   []'e' then {Up note(name:'f' octave:O sharp:false instrument:none) A-1}
+		   []'f' andthen Note.sharp=false then {Up note(name:'f' octave:O sharp:true instrument:none) A-1}
+		   []'f' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:false instrument:none) A-1}
+		   []'g' andthen Note.sharp=false then {Up note(name:'g' octave:O sharp:true instrument:none) A-1}
+		   []'g' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false instrument:none) A-1}
+		   []'a' andthen Note.sharp==false then {Up note(name:'a' octave:O sharp:true instrument:none) A-1}
+		   []'a' andthen Note.sharp==true then {Up note(name:'b' octave:O sharp:false instrument:none) A-1}
+		   []'b' then {Up note(name:'c' octave:O+1 sharp:false instrument:none) A-1}
+		   else nil
+		   end
+      else if A=<~1 then case Note.name of 'b' then {Up note(name:'a' octave:O sharp:true instrument:none) A+1}
+			 []'a' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false instrument:none) A+1}
+			 []'a' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:true instrument:none) A+1}
+			 []'g' andthen Note.sharp==true then {Up note(name:'g' octave:O sharp:false instrument:none) A+1}
+			 []'g' andthen Note.sharp==false then {Up note(name:'f' octave:O sharp:true instrument:none) A+1}
+			 []'f' andthen Note.sharp==true then {Up note(name:'f' octave:O sharp:false instrument:none) A+1}
+			 []'f' andthen Note.sharp==false then {Up note(name:'e' octave:O sharp:false instrument:none) A+1}
+			 []'e' then {Up note(name:'d' octave:O sharp:true instrument:none) A+1}
+			 []'d' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false instrument:none) A+1}
+			 []'d' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true instrument:none) A+1}
+			 []'c' andthen Note.sharp==true then {Up note(name:'c' octave:O sharp:false instrument:none) A+1}
+			 []'c' andthen Note.sharp==false then {Up note(name:'b' octave:O-1 sharp:false instrument:none) A+1}
+			 else nil
+			 end
+	   else Note
+	   end
+      end
+   end
+end
+      
    
    fun{Transpose N List}
 	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}

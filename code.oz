@@ -348,8 +348,8 @@ local
 	   fun {Loop D Music}
 	local 
 		fun {Repet M Acc}
-			if Acc=<D*44100.0 then 
-				case M of nil then {Repet Music Acc+1.0}
+			if Acc<D*44100.0 then 
+				case M of nil then {Repet Music Acc}
 				[]H|T then H|{Repet T Acc+1.0}
 				end
 			else

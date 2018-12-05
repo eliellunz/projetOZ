@@ -34,7 +34,15 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {Mix P2T Music}
-      % TODO
+		case Music of H|T then 
+			case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Append {NoteToSample H} {Mix P2T T}}
+			[] merge(L) then {Append {Merge {Mix P2T L}} {Mix P2T T}}
+			[] wave(W) then {Append {Projet.readFile S} {Mix P2T T}}
+			[] partition(P)  {Append {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
+			else nil
+			end
+		else nil 
+		end
       {Project.readFile 'wave/animaux/cow.wav'}
    end
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
@@ -43,11 +51,11 @@ local
          [] Atom then {NoteToExtended H}|{ToExtend T}
          [] Name#octave then {NoteToExtended H}|{ToExtend T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ToExtend T}
-         [] H1|T1 then {ChordToExtended H}|{ToExtend T}
-         [] duration(seconds:D L) then {Duration H.seconds {ToExtend H.1}}|{ToExtend T}
-         [] stretch(factor:F L) then {Stretch H.factor {ToExtend H.1}}|{ToExtend T}
+	 [] H1|T1 then {ChordToExtended H}|{ToExtend T}
+	 [] duration(seconds:D L) then {Append {Duration H.seconds {ToExtend H.1}} {ToExtend T}}
+	 [] stretch(factor:F L) then {Append {Stretch H.factor {ToExtend H.1}} {ToExtend T}}
          [] drone(note:N amount:A) then {Drone {ToExtend H.note} H.amount}|{ToExtend T}
-         [] transpose(semitones:S L) then {Transpose H.semitones {ToExtend H.2}}|{ToExtend T}
+	 [] transpose(semitones:S L) then {Append {Transpose H.semitones {ToExtend H.2}} {ToExtend T}}
          else {ToExtend T}
          end
       else nil
@@ -79,7 +87,7 @@ local
    fun{ChordToExtended Chord}
       case Chord of nil then nil 
 		[] H|T then case H of Atom then {NoteToExtended H}|{ChordToExtended T}
-         []Name#octave then {ChordToExtended H}|{ChordToExtended T}
+			[] Name#octave then {ChordToExtended H}|{ChordToExtended T}
 			[] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ChordToExtended T}
          else nil
          end
@@ -104,10 +112,10 @@ local
       [] H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then note(name:N octave:O sharp:S duration:Factor*D instrument:I)|{Stretch Factor T}
          [] H1|T1 then {Stretch Factor H}|{Stretch Factor T}
          [] silence(duration:D) then silence(duration:D*Factor)|{Stretch Factor T}
-         [] duration(seconds:D L) then {Stretch Factor {Duration H.seconds H.1}}|{Stretch Factor T}
-         [] stretch(factor:F L) then {Stretch Factor {Stretch H.factor H.1}}|{Stretch Factor T}
-         [] drone(note:N amount:A) then {Stretch Factor {Drone H.note H.amount}}|{Stretch Factor T}
-         [] transpose(semitones:S L) then {Stretch Factor {Transpose H.semitones H.1}}|{Stretch Factor T}
+	 [] duration(seconds:D L) then {Append {Stretch Factor {Duration H.seconds H.1}} {Stretch Factor T}}
+	 [] stretch(factor:F L) then {Append {Stretch Factor {Stretch H.factor H.1}} {Stretch Factor T}}
+	 [] drone(note:N amount:A) then {Stretch Factor {Drone H.note H.amount}}|{Stretch Factor T}
+	 [] transpose(semitones:S L) then {Append {Stretch Factor {Transpose H.semitones H.1}} {Stretch Factor T}}
          else nil
          end
       else nil
@@ -163,10 +171,10 @@ end
 	 case List of H|T then case H of H1|T1 then {Transpose N H}|{Transpose N T}
          [] note(name:N octave:O sharp:S duration:D instrument:I) then {Up H N}|{Transpose N T}
          []silence(duration:D) then H|{Transpose N T}
-         [] duration(seconds:D L) then {Transpose N {Duration H.seconds H.1}}|{Transpose N T}
-         [] stretch(factor:F L) then {Transpose N {Stretch H.factor H.1}}|{Transpose N T}
+         [] duration(seconds:D L) then {Append {Transpose N {Duration H.seconds H.1}} {Transpose N T}}
+	 [] stretch(factor:F L) then {Append {Transpose N {Stretch H.factor H.1}} {Transpose N T}}
          [] drone(note:N amount:A) then {Transpose N {Drone H.note H.amount}}|{Transpose N T}
-         [] transpose(semitones:S L) then {Transpose N {Transpose H.semitones H.1}}|{Transpose N T}
+	 [] transpose(semitones:S L) then {Append {Transpose N {Transpose H.semitones H.1}} {Transpose N T}}
          else nil
          end
        end

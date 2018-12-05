@@ -101,9 +101,9 @@ local
    local E in
    fun{Stretch Factor List}
       case List of nil then nil
-      [] H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then E=H.duration H.duration=E*Factor H|{Stretch Factor T}
+      [] H|T then case H of note(name:N octave:O sharp:S duration:D instrument:I) then note(name:N octave:O sharp:S duration:Factor*D instrument:I)|{Stretch Factor T}
          [] H1|T1 then {Stretch Factor H}|{Stretch Factor T}
-         [] silence(duration:D) then E=H.duration H.duration=E*Factor H|{Stretch Factor T}
+         [] silence(duration:D) then silence(duration:D*Factor)|{Stretch Factor T}
          [] duration(seconds:D L) then {Stretch Factor {Duration H.seconds H.1}}|{Stretch Factor T}
          [] stretch(factor:F L) then {Stretch Factor {Stretch H.factor H.1}}|{Stretch Factor T}
          [] drone(note:N amount:A) then {Stretch Factor {Drone H.note H.amount}}|{Stretch Factor T}
@@ -114,6 +114,8 @@ local
       end
    end
    end
+
+
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    

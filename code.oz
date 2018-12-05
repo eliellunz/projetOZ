@@ -121,32 +121,33 @@ local
  fun{Up Note A}
    local O in
       O=Note.octave
-      if A>=1 then case Note.name of 'c' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true instrument:none) A-1}
-		   []'c' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false instrument:none) A-1}
-		   []'d' andthen Note.sharp=false then {Up note(name:'d' octave:O sharp:true instrument:none) A-1}
-		   []'d' andthen Note.sharp==true then {Up note(name:'e' octave:O sharp:false instrument:none) A-1}
-		   []'e' then {Up note(name:'f' octave:O sharp:false instrument:none) A-1}
-		   []'f' andthen Note.sharp=false then {Up note(name:'f' octave:O sharp:true instrument:none) A-1}
-		   []'f' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:false instrument:none) A-1}
-		   []'g' andthen Note.sharp=false then {Up note(name:'g' octave:O sharp:true instrument:none) A-1}
-		   []'g' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false instrument:none) A-1}
-		   []'a' andthen Note.sharp==false then {Up note(name:'a' octave:O sharp:true instrument:none) A-1}
-		   []'a' andthen Note.sharp==true then {Up note(name:'b' octave:O sharp:false instrument:none) A-1}
-		   []'b' then {Up note(name:'c' octave:O+1 sharp:false instrument:none) A-1}
+      D=Note.duration
+      if A>=1 then case Note.name of 'c' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true duration:D instrument:none) A-1}
+		                []'c' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false instrument:none duration:D) A-1}
+				[]'d' andthen Note.sharp=false then {Up note(name:'d' octave:O sharp:true duration:D instrument:none) A-1}
+				[]'d' andthen Note.sharp==true then {Up note(name:'e' octave:O sharp:false duration:D instrument:none) A-1}
+				[]'e' then {Up note(name:'f' octave:O sharp:false duration:D instrument:none) A-1}
+				[]'f' andthen Note.sharp=false then {Up note(name:'f' octave:O sharp:true duration:D instrument:none) A-1}
+				[]'f' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:false duration:D instrument:none) A-1}
+				[]'g' andthen Note.sharp=false then {Up note(name:'g' octave:O sharp:true duration:D instrument:none) A-1}
+				[]'g' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false duration:D instrument:none) A-1}
+				[]'a' andthen Note.sharp==false then {Up note(name:'a' octave:O sharp:true duration:D instrument:none) A-1}
+				[]'a' andthen Note.sharp==true then {Up note(name:'b' octave:O sharp:false duration:D instrument:none) A-1}
+				[]'b' then {Up note(name:'c' octave:O+1 sharp:false duration:D instrument:none) A-1}
 		   else nil
 		   end
       else if A=<~1 then case Note.name of 'b' then {Up note(name:'a' octave:O sharp:true instrument:none) A+1}
-			 []'a' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false instrument:none) A+1}
-			 []'a' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:true instrument:none) A+1}
-			 []'g' andthen Note.sharp==true then {Up note(name:'g' octave:O sharp:false instrument:none) A+1}
-			 []'g' andthen Note.sharp==false then {Up note(name:'f' octave:O sharp:true instrument:none) A+1}
-			 []'f' andthen Note.sharp==true then {Up note(name:'f' octave:O sharp:false instrument:none) A+1}
-			 []'f' andthen Note.sharp==false then {Up note(name:'e' octave:O sharp:false instrument:none) A+1}
-			 []'e' then {Up note(name:'d' octave:O sharp:true instrument:none) A+1}
-			 []'d' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false instrument:none) A+1}
-			 []'d' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true instrument:none) A+1}
-			 []'c' andthen Note.sharp==true then {Up note(name:'c' octave:O sharp:false instrument:none) A+1}
-			 []'c' andthen Note.sharp==false then {Up note(name:'b' octave:O-1 sharp:false instrument:none) A+1}
+					[]'a' andthen Note.sharp==true then {Up note(name:'a' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'a' andthen Note.sharp==false then {Up note(name:'g' octave:O sharp:true duration:D instrument:none) A+1}
+					[]'g' andthen Note.sharp==true then {Up note(name:'g' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'g' andthen Note.sharp==false then {Up note(name:'f' octave:O sharp:true duration:D instrument:none) A+1}
+					[]'f' andthen Note.sharp==true then {Up note(name:'f' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'f' andthen Note.sharp==false then {Up note(name:'e' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'e' then {Up note(name:'d' octave:O sharp:true duration:D instrument:none) A+1}
+					[]'d' andthen Note.sharp==true then {Up note(name:'d' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'d' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true duration:D instrument:none) A+1}
+					[]'c' andthen Note.sharp==true then {Up note(name:'c' octave:O sharp:false duration:D instrument:none) A+1}
+					[]'c' andthen Note.sharp==false then {Up note(name:'b' octave:O-1 sharp:false duration:D instrument:none) A+1}
 			 else nil
 			 end
 	   else Note

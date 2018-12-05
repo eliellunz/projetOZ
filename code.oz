@@ -197,8 +197,8 @@ end
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
  
-		fun {Merge List}
-			case List of H|T then case H of Fact#Music then 
+		fun {Merge {Mix P2T List}}
+			case {Mix P2T List} of H|T then case H of Fact#Music then 
 					{Sum {Map  H fun{$ X} X*Fact end} {Merge T}}
 				else nil end
 			else nil  end
@@ -253,7 +253,7 @@ end
 					end
 				end
 			in
-			{Fade2 0.0 Music}
+			{Fade2 1.0 Music}
 			end
 		   end
 		end

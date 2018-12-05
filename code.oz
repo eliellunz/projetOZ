@@ -33,11 +33,11 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   fun {Mix P2T Music}
+   fun{Mix P2T Music}
 		case Music of H|T then 
 			case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Append {NoteToSample H} {Mix P2T T}}
 			[] merge(L) then {Append {Merge {Mix P2T L}} {Mix P2T T}}
-			[] wave(W) then {Append {Projet.readFile S} {Mix P2T T}}
+			[] wave(W) then {Append {Projet.readFile W} {Mix P2T T}}
 			[] partition(P) then {Append {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
 			[] reverse(M) then {Append {Reverse {Mix P2T M}} {Mix P2T T}}
 			[] repeat(amount:A M) then {Append {Repeat A {Mix P2T M} nil} {Mix P2T T}}
@@ -46,9 +46,7 @@ local
 			[] echo(delay:D decay:F M) then {Append {Echo D F {Mix P2T M}} {Mix P2T T}}
 			[] fade(start:S out:O M) then {Append {Fade S O {Mix P2T M}} {Mix P2T T}}
 			[] cut(start:S finish:F M) then {Append {Cut S F {Mix P2T M}} {Mix P2T T}}
-			else nil
 			end
-		else nil 
 		end
       {Project.readFile 'wave/animaux/cow.wav'}
    end
@@ -136,7 +134,7 @@ local
    
  
  fun{Up Note A}
-   local O in
+   local O D in
       O=Note.octave
       D=Note.duration
       if A>=1 then case Note.name of 'c' andthen Note.sharp==false then {Up note(name:'c' octave:O sharp:true duration:D instrument:none) A-1}
@@ -212,8 +210,8 @@ end
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
  
-		fun {Merge {Mix P2T List}}
-			case {Mix P2T List} of H|T then case H of Fact#Music then 
+		fun{Merge List}
+			case List of H|T then case H of Fact#Music then 
 					{Sum {Map  H fun{$ X} X*Fact end} {Merge T}}
 				else nil end
 			else nil  end

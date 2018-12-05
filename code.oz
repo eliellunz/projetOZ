@@ -302,10 +302,10 @@ end
 		end
  		
 		fun{Freq Item} 
-			local Fact 
+			local Fact Oct={IntToFloat Item.octave}
 			in 
 				case {Label Item} of 'note' then Fact={Number.pow 2.0 (({IntToFloat Item.octave})-4.0)} 
-					{Number.pow 2.0 {Hauteur Item}/12.0}*440.0
+					({Number.pow 2.0 {Hauteur Item}/12.0})*440.0*Fact
 				else case Item of H|T then {Freq H}+{Freq T}
 						else 0.0 
 					end
@@ -314,35 +314,34 @@ end
 		end
 		
 		fun{NoteToSample Note}
-			local A PI={Acos ~1.0}
-				fun{NoteToS N Acc}
-					if Acc>(N.duration)*44100 then nil
-					else A=0.5*{Sin 2.0*PI*{Freq N}*{IntToFloat Acc}/44100.0}
-						A|{NoteToS N Acc+1}
-					end
-				end
-			in
-				{NoteToS Note 1.0}
-			end
+		   case Note of nil then nil else
+		      local
+		      Pi={Acos ~1.0}
+		      Duree=4.0*Note.duration
+		      fun{NToSample Acc}
+			 if (Acc=<Duree) then
+			    0.5*{Sin 2.0*Pi*{Freq Note}*Acc/44100.0}|{NToSample Acc+1.0}
+			 else nil
+			 end
+		      end
+		      end
+		   in
+		      {NToSample 1.0}
+		   end
 		end
-		
+
 		fun{ChordToSample Chord}
 			case Chord of nil then nil
 			[] H|T then {NoteToSample H}|{ChordToSample T}
 			else nil
 			end
 		end
-		
+
 		fun{ToOneChord Chord}%Prend un accord sous forme de liste de NoteSampled et renvoie une seule liste avec les Notes additionne
-			local
-				fun{ToOneC C Acc}
-					case  C of nil then Acc
-					[] H|nil then H
-					[] H|T then {ToOneC T.2 Acc+{Sum H T.1}}
-					end
-				end
-			in {ToOneC Chord nil}
-			end
+		   case Chord of nil then nil
+		   [] H|nil then H
+		   [] H1|H2|T then {ToOneChord {Sum H1 H2}|T}
+		   end
 		end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 				fun{WaveToSample Wave} 

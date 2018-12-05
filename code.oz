@@ -38,7 +38,14 @@ local
 			case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Append {NoteToSample H} {Mix P2T T}}
 			[] merge(L) then {Append {Merge {Mix P2T L}} {Mix P2T T}}
 			[] wave(W) then {Append {Projet.readFile S} {Mix P2T T}}
-			[] partition(P)  {Append {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
+			[] partition(P) then {Append {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
+			[] reverse(M) then {Append {Reverse {Mix P2T M}} {Mix P2T T}}
+			[] repeat(amount:A M) then {Append {Repeat A {Mix P2T M} nil} {Mix P2T T}}
+			[] loop(duration:D M) then {Append {Loop D {Mix P2T M}} {Mix P2T T}}
+			[] clip(low:L high:H M) then {Append {Clip L H {Mix P2T M}} {Mix P2T T}}
+			[] echo(delay:D decay:F M) then {Append {Echo D F {Mix P2T M}} {Mix P2T T}}
+			[] fade(start:S out:O M) then {Append {Fade S O {Mix P2T M}} {Mix P2T T}}
+			[] cut(start:S finish:F M) then {Append {Cut S F {Mix P2T M}} {Mix P2T T}}
 			else nil
 			end
 		else nil 

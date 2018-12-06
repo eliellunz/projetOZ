@@ -1,3 +1,11 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                                                                                                                                        %%
+%%                                                                            Prenoms : Julien & Eliel                                                                                    %%
+%%                                                                            Noms : Duquenne & Lunzanga                                                                                  %%
+%%                                                                            Nomas : 64601700 & 75171600                                                                                 %%
+%%                                                                                                                                                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 local
 
 [Project] = {Link ['Project2018.ozf']}
@@ -173,8 +181,8 @@ end
 %Renvoie la distance en semi-tons entre Note et la note La(=a)
 %Necessite : /	
 fun{Hauteur Note}
-	local Height= height(a:0.0 b:2.0 c:3.0 d:5.0 e:7.0 f:8.0 g:11.0)
-		HeightS= heightsharp(a:1.0 c:4.0 d:6.0 f:9.0 g:10.0)
+	local Height= height(a:0.0 b:2.0 c:3.0 d:5.0 e:7.0 f:8.0 g:10.0)
+		HeightS= heightsharp(a:1.0 c:4.0 d:6.0 f:9.0 g:11.0)
 		Nom= Note.name
 	in
 		if Note.sharp== false then Height.Nom
@@ -385,7 +393,7 @@ fun{Mix P2T Music}
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   Music = {Project.load 'joy.dj.oz'}
+   Music = {Project.load 'LoR.dj.oz'}
    Start
 
 

@@ -207,6 +207,7 @@ fun{NoteToSample Note}
 	in
 	{NToSample 1.0}
 	end
+	end		
 end
 %Renvoie une liste d'echantillons listes des notes de Chord.
 %Necessite : NoteToSample.		

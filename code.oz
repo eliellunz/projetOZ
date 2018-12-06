@@ -42,7 +42,7 @@ end
 %Necessite : Duree, Stretch.
 fun{Duration Seconds Partition}
 	local
-		Fact=Seconds/{Duree Partition nil}
+		Fact=Seconds/{Duree Partition 0.0}
 	in
 		{Stretch Fact Partition}
 	end

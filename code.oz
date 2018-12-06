@@ -363,25 +363,25 @@ end
 % Renvoie Music sous forme de liste d'echantillons.
 % Necessite : NoteToSample, Merge, Reverse, Repeat, Loop, Clip, Echo, Fade et Cut.
 fun{Mix P2T Music}
-	case Music 
-	of H|T then 
-		case H 
-		of note(name:N octave:O sharp:S duration:D instrument:I) then {Flatten {NoteToSample H} {Mix P2T T}}
-		[] merge(L) then {Flatten {Merge {Mix P2T L}} {Mix P2T T}}
-		[] wave(W) then {Flatten {Project.readFile W} {Mix P2T T}}
-		[] partition(P) then {Flatten {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
-		[] reverse(M) then {Flatten {Reverse {Mix P2T M} nil} {Mix P2T T}}
-		[] repeat(amount:A M) then {Flatten {Repeat A {Mix P2T M} nil} {Mix P2T T}}
-		[] loop(duration:D M) then {Flatten {Loop D {Mix P2T M}} {Mix P2T T}}
-		[] clip(low:L high:H M) then {Flatten {Clip L H {Mix P2T M}} {Mix P2T T}}
-		[] echo(delay:D decay:F M) then {Flatten {Echo D F {Mix P2T M}} {Mix P2T T}}
-		[] fade(start:S out:O M) then {Flatten {Fade S O {Mix P2T M}} {Mix P2T T}}
-		[] cut(start:S finish:F M) then {Flatten {Cut S F {Mix P2T M}} {Mix P2T T}}
-		else nil 
+	case Music of H|T then 
+		case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Append {NoteToSample H} {Mix P2T T}}
+		[] merge(L) then {Append {Merge {Mix P2T L}} {Mix P2T T}}
+		[] wave(W) then {Append {Project.readFile W} {Mix P2T T}}
+		[] partition(P) then {Append {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
+		[] reverse(M) then {Append {Reverse {Mix P2T M} nil} {Mix P2T T}}
+		[] repeat(amount:A M) then {Append {Repeat A {Mix P2T M} nil} {Mix P2T T}}
+		[] loop(duration:D M) then {Append {Loop D {Mix P2T M}} {Mix P2T T}}
+		[] clip(low:L high:H M) then {Append {Clip L H {Mix P2T M}} {Mix P2T T}}
+		[] echo(delay:D decay:F M) then {Append {Echo D F {Mix P2T M}} {Mix P2T T}}
+		[] fade(start:S out:O M) then {Append {Fade S O {Mix P2T M}} {Mix P2T T}}
+		[] cut(start:S finish:F M) then {Append {Cut S F {Mix P2T M}} {Mix P2T T}}
+		 else nil
 		end
 	else nil
+	   
 	end
-	{Project.readFile 'wave/animaux/cow.wav'}
+	
+	
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

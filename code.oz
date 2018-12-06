@@ -363,8 +363,10 @@ end
 % Renvoie Music sous forme de liste d'echantillons.
 % Necessite : NoteToSample, Merge, Reverse, Repeat, Loop, Clip, Echo, Fade et Cut.
 fun{Mix P2T Music}
-	case Music of H|T then 
-		case H of note(name:N octave:O sharp:S duration:D instrument:I) then {Flatten {NoteToSample H} {Mix P2T T}}
+	case Music 
+	of H|T then 
+		case H 
+		of note(name:N octave:O sharp:S duration:D instrument:I) then {Flatten {NoteToSample H} {Mix P2T T}}
 		[] merge(L) then {Flatten {Merge {Mix P2T L}} {Mix P2T T}}
 		[] wave(W) then {Flatten {Project.readFile W} {Mix P2T T}}
 		[] partition(P) then {Flatten {Mix P2T {PartitionToTimedList P}} {Mix P2T T}}
@@ -375,7 +377,9 @@ fun{Mix P2T Music}
 		[] echo(delay:D decay:F M) then {Flatten {Echo D F {Mix P2T M}} {Mix P2T T}}
 		[] fade(start:S out:O M) then {Flatten {Fade S O {Mix P2T M}} {Mix P2T T}}
 		[] cut(start:S finish:F M) then {Flatten {Cut S F {Mix P2T M}} {Mix P2T T}}
+		else nil 
 		end
+	else nil
 	end
 	{Project.readFile 'wave/animaux/cow.wav'}
 end

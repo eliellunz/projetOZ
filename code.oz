@@ -315,7 +315,7 @@ end
 		   case Note of nil then nil else
 		      local
 		      Pi={Acos ~1.0}
-		      Duree=4.0*Note.duration
+		      Duree=44100.0*Note.duration
 		      fun{NToSample Acc}
 			 if (Acc=<Duree) then
 			    0.5*{Sin 2.0*Pi*{Freq Note}*Acc/44100.0}|{NToSample Acc+1.0}

@@ -10,7 +10,9 @@ fun {NoteToExtended Note}
 	case Note of Name#Octave then note(name:Name octave:Octave sharp:true duration:1.0 instrument:none)
 		[] Atom then case {AtomToString Atom} of [_] then note(name:Atom octave:4 sharp:false duration:1.0 instrument:none)
 			[] [N O] then note(name:{StringToAtom [N]} octave:{StringToInt [O]} sharp:false duration:1.0 instrument: none)
-				end
+			     else nil
+			     end
+	else nil
 	end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,6 +132,7 @@ fun{Transpose N List}
 		[] transpose(semitones:S L) then {Append {Transpose N {Transpose H.semitones H.1}} {Transpose N T}}
 		else nil
 		end
+	else nil
 	end
 end	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,7 +140,6 @@ end
 %Necessite : NoteToExtendend, ChordToExtended, Duration, Stretch et Transpose.	
 fun{ToExtend List}
 	case List of H|T then case H of silence(duration:D) then H|{ToExtend T}
-		[] Atom then {NoteToExtended H}|{ToExtend T}
 		[] Name#octave then {NoteToExtended H}|{ToExtend T}
 		[] note(name:N octave:O sharp:S duration:D instrument:I) then H|{ToExtend T}
 		[] H1|T1 then {ChordToExtended H}|{ToExtend T}
@@ -145,6 +147,7 @@ fun{ToExtend List}
 		[] stretch(factor:F L) then {Append {Stretch H.factor {ToExtend H.1}} {ToExtend T}}
 		[] drone(note:N amount:A) then {Drone {ToExtend H.note} H.amount}|{ToExtend T}
 		[] transpose(semitones:S L) then {Append {Transpose H.semitones {ToExtend H.2}} {ToExtend T}}
+		[] Atom then {NoteToExtended H}|{ToExtend T}
 		else {ToExtend T}
 		end
 	else nil
@@ -195,7 +198,8 @@ end
 %Renvoie la Note sous forme de liste d'echantillons.
 %Necessite: Freq.	
 fun{NoteToSample Note}
-	case Note of nil then nil else
+   case Note of nil then nil
+   else
 	local
 		Pi={Acos ~1.0}
 		Duree=44100.0*Note.duration
@@ -205,9 +209,9 @@ fun{NoteToSample Note}
  			end
 		end
 	in
-	{NToSample 1.0}
-	end
-	end		
+	   {NToSample 1.0}
+	end	
+   end
 end
 %Renvoie une liste d'echantillons listes des notes de Chord.
 %Necessite : NoteToSample.		
@@ -223,7 +227,9 @@ fun{ToOneChord Chord}
 	case Chord of nil then nil
 	[] H|nil then H
 	[] H1|H2|T then {ToOneChord {Sum H1 H2}|T}
+	else nil   
 	end
+	
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Renvoie une liste avec plusieurs Music chacune ayant sa propre intensite.
@@ -267,7 +273,8 @@ fun {Loop D Music}
 	local 
 		fun {Repet M Acc}
 			if Acc<D*44100.0 then case M of nil then {Repet Music Acc}
-						[]H|T then H|{Repet T Acc+1.0}
+					      []H|T then H|{Repet T Acc+1.0}
+					      else nil
 						end
 			else nil
 			end
@@ -348,6 +355,7 @@ fun {Cut D F Music}
 		[] nil then if Deb==Fin then nil
 			    else 0.0|{Cut Deb+1.0 Fin nil}
 			    end
+		else nil
 		end
 	end
 end		
